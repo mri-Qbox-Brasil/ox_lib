@@ -1,5 +1,5 @@
 ---@diagnostic disable: invisible
-lib.print.warn('ox_lib\'s class module is experimental and may break without warning.')
+local getinfo = debug.getinfo
 
 ---Ensure the given argument or property has a valid type, otherwise throwing an error.
 ---@param id number | string
@@ -31,7 +31,6 @@ end
 ---@field protected constructor? OxClassConstructor
 local mixins = {}
 local constructors = {}
-local getinfo = debug.getinfo
 
 ---Somewhat hacky way to remove the constructor from the class.__index.
 ---Maybe add static fields in the future?
@@ -129,8 +128,10 @@ end
 
 ---Creates a new class.
 ---@generic S : OxClass
----@param name string
+---@generic T : string
+---@param name `T`
 ---@param super? S
+---@return `T`
 function lib.class(name, super)
     assertType(1, name, 'string')
 
