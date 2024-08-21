@@ -88,13 +88,3 @@ jobs:
           prerelease: false
           files: ox_lib.zip
 
-        env:
-          CI: false
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-
-      - name: Publish npm package
-        uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.GH_TOKEN }}
-          package: './package/package.json'
-          access: 'public'
