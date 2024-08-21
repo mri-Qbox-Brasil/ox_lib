@@ -83,18 +83,18 @@ jobs:
         uses: 'marvinpinto/action-automatic-releases@v1.2.1'
         id: auto_release
         with:
-          repo_token: '${{ secrets.GITHUB_TOKEN }}'
+          repo_token: '${{ secrets.GH_TOKEN }}'
           title: ${{ env.RELEASE_VERSION }}
           prerelease: false
           files: ox_lib.zip
 
         env:
           CI: false
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Publish npm package
         uses: JS-DevTools/npm-publish@v1
         with:
-          token: ${{ secrets.NPM_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
           package: './package/package.json'
           access: 'public'
