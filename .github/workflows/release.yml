@@ -112,7 +112,7 @@ jobs:
         run: |
           git add file_list.txt
           git commit -m "Update file_list.txt [skip ci]" || echo "No changes to commit"
-          git push origin ${{ github.ref_name }}
+          git push origin master
 
       - name: Upload file_list.txt as an artifact (optional)
         uses: actions/upload-artifact@v4
