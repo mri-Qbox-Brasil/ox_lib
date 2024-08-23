@@ -1,0 +1,8 @@
+*.txt
+*.filelistignore
+*.git*
+*package
+*.editorconfig
+*LICENSE
+*.png
+*.md
