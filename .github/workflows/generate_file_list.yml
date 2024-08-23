@@ -1,0 +1,42 @@
+name: Generate and Commit File List on Tag
+
+on:
+  push:
+    tags:
+      - '*'  # Executa o workflow em qualquer push de tag
+
+permissions:
+  contents: write
+
+jobs:
+  generate_and_commit_file_list:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.ref }}  # Checkout da tag ou branch relacionada ao push
+
+    - name: Configure Git
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
+    - name: List all files in the repository, excluding based on .filelistignore
+      run: |
+        IGNORE_PATTERNS=$(cat .filelistignore | sed 's/^/-not -path \"/' | sed 's/$/\"/')
+        eval find . -type f $IGNORE_PATTERNS > file_list.txt
+
+    - name: Commit changes
+      run: |
+        git checkout -b temp-branch  # Criar uma branch temporária
+        git add file_list.txt
+        git commit -m "Update file_list.txt [skip ci]" || echo "No changes to commit"
+        git push origin temp-branch  # Push da branch temporária para não alterar a tag original
+
+    - name: Upload file_list.txt as an artifact (opcional)
+      uses: actions/upload-artifact@v3
+      with:
+        name: file_list
+        path: file_list.txt
