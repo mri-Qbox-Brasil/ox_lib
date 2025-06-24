@@ -2,8 +2,7 @@ name: Generate and Commit File List on Tag
 
 on:
   push:
-    tags:
-      - '*'  # Executa o workflow em qualquer push de tag
+    branches: [master]
 
 permissions:
   contents: write
@@ -14,9 +13,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
-      with:
-        ref: ${{ github.ref }}  # Checkout da tag ou branch relacionada ao push
+      uses: actions/checkout@v4
 
     - name: Configure Git
       run: |
@@ -30,13 +27,12 @@ jobs:
 
     - name: Commit changes
       run: |
-        git checkout -b temp-branch  # Criar uma branch temporária
         git add file_list.txt
         git commit -m "Update file_list.txt [skip ci]" || echo "No changes to commit"
-        git push origin temp-branch  # Push da branch temporária para não alterar a tag original
+        git push origin master
 
-    - name: Upload file_list.txt as an artifact (opcional)
-      uses: actions/upload-artifact@v3
+    - name: Upload file_list.txt as an artifact (optional)
+      uses: actions/upload-artifact@v4
       with:
         name: file_list
         path: file_list.txt
