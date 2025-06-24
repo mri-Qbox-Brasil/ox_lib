@@ -1,7 +1,11 @@
 ---@meta
----ox_lib <https://github.com/overextended/ox_lib>
----Copyright (C) 2021 Linden <https://github.com/thelindat>
----LGPL-3.0-or-later <https://www.gnu.org/licenses/lgpl-3.0.en.html>
+--[[
+    https://github.com/overextended/ox_lib
+
+    This file is licensed under LGPL-3.0 or higher <https://www.gnu.org/licenses/lgpl-3.0.en.html>
+
+    Copyright © 2025 Linden <https://github.com/thelindat>
+]]
 
 if not _VERSION:find('5.4') then
     error('Lua 5.4 must be enabled in the resource manifest!', 2)
@@ -52,7 +56,15 @@ local function loadModule(self, module)
         local fn, err = load(chunk, ('@@ox_lib/imports/%s/%s.lua'):format(module, context))
 
         if not fn or err then
-            return error(('\n^1Error importing module (%s): %s^0'):format(dir, err), 3)
+            if shared then
+                lib.print.warn(("An error occurred when importing '@ox_lib/imports/%s'.\nThis is likely caused by improperly updating ox_lib.\n%s'")
+                    :format(module, err))
+                fn, err = load(shared, ('@@ox_lib/imports/%s/shared.lua'):format(module))
+            end
+
+            if not fn or err then
+                return error(('\n^1Error importing module (%s): %s^0'):format(dir, err), 3)
+            end
         end
 
         local result = fn()
@@ -127,8 +139,10 @@ function SetInterval(callback, interval, ...)
         repeat
             interval = intervals[id]
             Wait(interval)
+
+            if interval < 0 then break end
             callback(table.unpack(args))
-        until interval < 0
+        until false
         intervals[id] = nil
     end)
 

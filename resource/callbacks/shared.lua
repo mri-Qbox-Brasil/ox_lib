@@ -1,3 +1,11 @@
+--[[
+    https://github.com/overextended/ox_lib
+
+    This file is licensed under LGPL-3.0 or higher <https://www.gnu.org/licenses/lgpl-3.0.en.html>
+
+    Copyright © 2025 Linden <https://github.com/thelindat>
+]]
+
 local registeredCallbacks = {}
 
 AddEventHandler('onResourceStop', function(resourceName)
@@ -27,7 +35,10 @@ function lib.setValidCallback(callbackName, isValid)
 
         if callbackResource == resourceName then return end
 
-        error(("cannot overwrite callback '%s' owned by resource '%s'"):format(callbackName, callbackResource))
+        local errMessage = ("^1resource '%s' attempted to overwrite callback '%s' owned by resource '%s'^0"):format(resourceName, callbackName, callbackResource)
+
+        return print(('^1SCRIPT ERROR: %s^0\n%s'):format(errMessage,
+            Citizen.InvokeNative(`FORMAT_STACK_TRACE` & 0xFFFFFFFF, nil, 0, Citizen.ResultAsString()) or ''))
     end
 
     lib.print.verbose(("set valid callback '%s' for resource '%s'"):format(callbackName, resourceName))
