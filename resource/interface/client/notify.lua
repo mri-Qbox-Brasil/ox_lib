@@ -35,6 +35,10 @@ function lib.notify(data)
     data.sound = nil
     data.position = data.position or settings.notification_position
 
+    if data.position ~= "center-right" then -- forçar posição da notify mri (não achei solução melhor se quiserem mudar fiquem à vontade)
+        data.position = "center-left"
+    end
+
     SendNUIMessage({
         action = 'notify',
         data = data
