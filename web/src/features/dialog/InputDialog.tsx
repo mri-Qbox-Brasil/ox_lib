@@ -104,7 +104,7 @@ const InputDialog: React.FC = () => {
         centered
         closeOnEscape={fields.options?.allowCancel !== false}
         closeOnClickOutside={false}
-        size="sm"
+        size={fields.options?.size || 'sm'}
         styles={{
           title: {
             textAlign: 'center',
