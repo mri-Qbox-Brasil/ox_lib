@@ -62,7 +62,7 @@ const getAnimation = (visible: boolean, position: string) => {
       animation = { from: 'X(0px)', to: 'X(-100%)' };
     } else if (position === 'top-center') {
       animation = { from: 'Y(0px)', to: 'Y(-100%)' };
-    } else if (position === 'bottom') {
+    } else if (position === 'bottom-center') {
       animation = { from: 'Y(0px)', to: 'Y(100%)' };
     } else {
       animation = { from: 'X(0px)', to: 'X(100%)' };
@@ -139,7 +139,7 @@ const Notifications: React.FC = () => {
     } else {
       iconColor = tinycolor(data.iconColor).toRgbString();
     }
-    
+
     toast.custom(
       (t) => (
         <Box
