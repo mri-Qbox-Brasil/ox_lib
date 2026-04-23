@@ -329,46 +329,18 @@ if service == 'loki' then
 	end
 end
 
-if service == 'fivemerr' then
-    local key = GetConvar('fivemerr:apiToken', '')
-
-    if key ~= '' then
-        local endpoint = 'https://api.fivemerr.com/v1/logs'
-
-        local headers = {
-            ['Authorization'] = key,
-            ['Content-Type'] = 'application/json',
-            ['User-Agent'] = 'ox_lib'
-        }
-
-        function lib.logger(source, event, message, ...)
-            if not buffer then
-                buffer = {}
-
-                SetTimeout(500, function()
-                    PerformHttpRequest(endpoint, function(status, _, _, response)
-                        if status ~= 200 then
-                            if type(response) == 'string' then
-                                response = json.decode(response) or response
-                                badResponse(endpoint, status, response)
-                            end
-                        end
-                    end, 'POST', json.encode(buffer), headers)
-
-                    buffer = nil
-                end)
-            end
-
-            buffer = {
-                level = "info",
-                message = event .. " - " .. message,
-                resource = cache.resource,
-                metadata = {
-                    event = event,
-                    tags = formatTags(source, ... and string.strjoin(',', string.tostringall(...)) or nil),
-                }
-            }
-        end
+if service == 'mri_Qadmin' or service == 'fivemerr' then
+    function lib.logger(source, event, message, ...)
+        TriggerEvent('mri_Qadmin:server:AddLog',
+            cache.resource,
+            event,
+            'info',
+            message,
+            {
+                tags = formatTags(source, ... and string.strjoin(',', string.tostringall(...)) or nil)
+            },
+            source
+        )
     end
 end
 
